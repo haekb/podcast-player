@@ -6,14 +6,15 @@
                     <md-button ng-click="changeRoute('/')" class="md-icon-button" aria-label="Back">
                         <i class="material-icons">arrow_back</i>
                     </md-button>
-                    <md-button ng-click="refresh()">
+                    <h2 class="md-flex">{{podcastData.title}}</h2>
+                    <span flex></span>
+                    <md-button ng-click="refresh()" class="md-icon-button" aria-label="Refresh episode list">
                         <i class="material-icons">refresh</i>
                     </md-button>
-                    <h2 class="md-flex">Giantbomb Cast</h2>
                 </div>
             </md-toolbar>
             <md-content layout="column">
-                <md-list>
+                <md-list class="list-content-view">
                     <md-list-item class="md-2-line" ng-repeat="item in podcastItems">
                         <md-button ng-click="changeUrl(item)"><i class="material-icons">playlist_play</i></md-button>
                         <div class="md-list-item-text">
