@@ -1,0 +1,20 @@
+<div class="seeker-bar">
+    <md-slider flex min="0" max="{{audioMaxTime}}" ng-model="audioElement.currentTime" aria-label="seeker"
+               id="timeSeeker" class="seeker">
+    </md-slider>
+</div>
+<div class="misc-bar">
+    <div class="button-bar">
+        <md-button ng-disabled="disableControls" ng-click="skipPrevious(10)"><i class="material-icons">replay_10</i></md-button>
+        <md-button ng-disabled="disableControls" ng-click="togglePlayback()">
+            <i ng-show="playbackState == 'play'" class="material-icons play">play_circle_outline</i>
+            <i ng-show="playbackState == 'pause'" class="material-icons pause">pause_circle_outline</i>
+        </md-button>
+        <md-button ng-disabled="disableControls" ng-click="skipAhead(30)"><i class="material-icons">forward_30</i></md-button>
+    </div>
+    <div class="time-bar" ng-disabled="disableControls">
+        {{ currentTimeModel | formatAudioTime }} / {{ audioMaxTime | formatAudioTime }}
+    </div>
+</div>
+
+<audio ng-src="{{audioUrl | trustUrl}}"/>

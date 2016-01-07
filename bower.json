@@ -1,0 +1,35 @@
+{
+  "name": "Electron-Boilerplate",
+  "version": "1.1.1",
+  "homepage": "https://github.com/Stephn-R/Electron-Boilerplate",
+  "authors": [
+    "Stephen Rodriguez <steprodriguez10@gmail.com>"
+  ],
+  "description": "A template for Electron projects to build/publish Mac/Windows/Linux compatible applications",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.1",
+    "Bootflat": "~2.0.4",
+    "angular-bootstrap": "~0.14.3",
+    "angular-route": "~1.4.8",
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.1.4",
+    "angular-material": "~0.11.4",
+    "angular-sanitize": "~1.4.8",
+    "rss-parser": "*",
+    "angular-xml": "~2.2.1"
+  },
+  "devDependencies": {}
+}
