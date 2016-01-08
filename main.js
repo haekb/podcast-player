@@ -42,7 +42,23 @@ app.on('window-all-closed', function () {
     }
 });
 
+// Spawn a new window if they re-click on the icon (mac osx)
+app.on('activate', function () {
+   if (_.isNull(mainWindow)) {
+       createMainWindow();
+   }
+});
+
 app.on('ready', function () {
+    createMainWindow();
+
+    ipcMain.on('test', (event, arg) => {
+        event.sender.send('test', filesize(1024));
+    });
+
+});
+
+var createMainWindow = function() {
     mainWindow = new BrowserWindow({width: 800, height: 600});
     mainWindow.loadURL(path.join('file://', __dirname, options.views_dir, options.root_view));
     if (options.debug) {
@@ -52,12 +68,7 @@ app.on('ready', function () {
         mainWindow = null;
     });
     URL_PREFIX = path.join('file://', __dirname, options.views_dir);
-
-    ipcMain.on('test', (event, arg) => {
-       event.sender.send('test',filesize(1024));
-    });
-
-});
+};
 
 // ############################################################################################
 // ############################################################################################
