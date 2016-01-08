@@ -114,7 +114,9 @@ md-grid-tile {
 
 .tile-animate {
   //transition: all 400ms ease-out 50ms;
+  //transition: transform 300ms cubic-bezier(.55,0,.01,1);
   transition: transform 300ms cubic-bezier(.55,0,.01,1);
+  transform: scale(0);
 
   //FIXME: Ng-Animate not working
   &.ng-enter {

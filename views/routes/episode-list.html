@@ -4,11 +4,17 @@
             <md-toolbar class="md-warn">
                 <div class="md-toolbar-tools">
                     <md-button ng-click="changeRoute('/')" class="md-icon-button" aria-label="Back">
+                        <md-tooltip>
+                            Back
+                        </md-tooltip>
                         <i class="material-icons">arrow_back</i>
                     </md-button>
                     <h2 class="md-flex">{{podcastData.title}}</h2>
                     <span flex></span>
                     <md-button ng-click="refresh()" class="md-icon-button" aria-label="Refresh episode list">
+                        <md-tooltip>
+                            Refresh
+                        </md-tooltip>
                         <i class="material-icons">refresh</i>
                     </md-button>
                 </div>

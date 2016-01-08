@@ -41,6 +41,10 @@ function PodcastListController($scope,
            });
         });
 
+        $timeout(() => {
+            $('.tile-animate').addClass('ng-enter-active');
+        },300);
+
         /*
         Junk test data, for eventual nodejs integration with angular
 
