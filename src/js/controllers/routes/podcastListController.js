@@ -4,6 +4,7 @@ ngApp.controller('PodcastListController', [
     '$http',
     'x2js',
     '$mdDialog',
+    '$timeout',
     'podcastService',
     '$location',
     PodcastListController]);
@@ -13,6 +14,7 @@ function PodcastListController($scope,
                                $http,
                                x2js,
                                $mdDialog,
+                               $timeout,
                                podcastService,
                                $location) {
     var init = () => {
@@ -39,6 +41,9 @@ function PodcastListController($scope,
            });
         });
 
+        /*
+        Junk test data, for eventual nodejs integration with angular
+
         ipcRenderer.on('test', (event, arg) => {
             console.log("Event found", arg);
             $scope.URL_PREFIX = arg;
@@ -46,6 +51,7 @@ function PodcastListController($scope,
 
 
         ipcRenderer.send('test', 'readydawf');
+        */
     };
 
     $scope.changeRoute = (path) => {
@@ -54,8 +60,10 @@ function PodcastListController($scope,
     };
 
     $scope.loadPodcast = (podcast) => {
+        $timeout(() => {
         console.log("Loading Podcast", podcast.title);
         $location.path(podcast.id + '/episode-list/');
+        },300);
     };
 
     $scope.showAddDialog = function ($event) {

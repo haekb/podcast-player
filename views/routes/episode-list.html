@@ -1,6 +1,6 @@
 <div layout="row" layout-wrap>
     <div flex="100">
-        <div class="main-container md-whiteframe-1dp">
+        <div class="main-container ">
             <md-toolbar class="md-warn">
                 <div class="md-toolbar-tools">
                     <md-button ng-click="changeRoute('/')" class="md-icon-button" aria-label="Back">
@@ -15,13 +15,18 @@
             </md-toolbar>
             <md-content layout="column">
                 <md-list class="list-content-view">
-                    <md-list-item class="md-2-line" ng-repeat="item in podcastItems">
-                        <md-button ng-click="changeUrl(item)"><i class="material-icons">playlist_play</i></md-button>
-                        <div class="md-list-item-text">
-                            <h3>{{item.title}}</h3>
-                            <p>{{item.description}}</p>
-                        </div>
-                    </md-list-item>
+                    <div ng-repeat="item in podcastItems">
+                        <md-list-item class="md-2-line">
+                            <md-button ng-click="changeUrl(item)" class="list-icon"><i class="material-icons">playlist_play</i>
+                            </md-button>
+                            <div class="md-list-item-text">
+                                <h3>{{item.title}}</h3>
+                                <p>{{item.description}}</p>
+                            </div>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                    </div>
+
                 </md-list>
             </md-content>
         </div>
