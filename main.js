@@ -35,17 +35,18 @@ options = _.extend({
 // ############################################################################################
 // ############################################################################################
 
+// TODO: Move audio processing to node so the podcast can be listened to with the app 'closed'
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
+    //if (process.platform !== 'darwin') {
         app.quit();
-    }
+    //}
 });
 
 // Spawn a new window if they re-click on the icon (mac osx)
 app.on('activate', function () {
    if (_.isNull(mainWindow)) {
-       createMainWindow();
+       //createMainWindow();
    }
 });
 
