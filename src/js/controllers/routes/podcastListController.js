@@ -41,9 +41,14 @@ function PodcastListController($scope,
            });
         });
 
+        // Cheap and easy hierarchical timing, note that this doesn't work for rows..yet!
         $timeout(() => {
-            $('.tile-animate').addClass('ng-enter-active');
-        },300);
+            _.forEach($('.tile-animate'), (item, index) => {
+               $timeout(() => {
+                   $(item).addClass('ng-enter-active');
+               }, 100 * index);
+            });
+        },200);
 
         /*
         Junk test data, for eventual nodejs integration with angular
