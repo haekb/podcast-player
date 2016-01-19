@@ -20,7 +20,7 @@
                     md-cols-sm="1" md-cols-md="3" md-cols-gt-md="6"
                     md-row-height-gt-md="1:1" md-row-height="2:2"
                     md-gutter="12px" md-gutter-gt-sm="8px" >
-                <md-grid-tile ink-ripple class="red tile-animate" ng-repeat="item in podcastList track by $index" ng-style="{'background-image': 'url({{item.thumbnail}})'}" ng-click="loadPodcast(item)">
+                <md-grid-tile ink-ripple class="red tile-animate mouse-click" ng-repeat="item in podcastList track by $index" ng-style="{'background-image': 'url({{item.thumbnail}})'}" ng-click="loadPodcast(item)">
                     <md-grid-tile-footer>
                         <h3>{{ item.title }}</h3>
                     </md-grid-tile-footer>
