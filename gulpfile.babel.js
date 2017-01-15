@@ -4,8 +4,8 @@ import del from 'del';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import gulpLoadPlugins from 'gulp-load-plugins';
-var concat = require('gulp-concat')
-var filter = require('gulp-filter')
+var concat = require('gulp-concat');
+var filter = require('gulp-filter');
 //var vendor = require('gulp-concat-vendor');
 
 
@@ -23,15 +23,14 @@ const viewsRoot = 'views/';
 
 const vendor_scripts = [
     'vendor/jquery/dist/jquery.js',
-    'vendor/x2js/xml2json.js',
     'vendor/angular/angular.js',
     'vendor/angular-animate/angular-animate.js',
     'vendor/angular-aria/angular-aria.js',
     'vendor/angular-material/angular-material.js',
     'vendor/angular-route/angular-route.js',
     'vendor/angular-sanitize/angular-sanitize.js',
-    'vendor/angular-xml/angular-xml.js'
-
+    'vendor/x2js/xml2json.js',
+    'vendor/angular-xml/angular-xml.js',
 ];
 
 const vendor_styles = [
