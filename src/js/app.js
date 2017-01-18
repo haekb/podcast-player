@@ -16,6 +16,18 @@ var ngApp = angular.module('ngApp', [
     'xml'
 ]);
 
+// Register any ipcRenderer events from NodeJS
+ngApp.run(($rootScope) => {
+
+    ipcRenderer.on('hotkeyEvent', (event, data) => {
+        // Ship it off to rootScope
+        console.info("Hotkey Event Called with [%s], passing it along to $rootScope.",data);
+        $rootScope.$broadcast('hotkeyEvent',data);
+    });
+
+
+
+});
 
 $(function() {
     console.log("Jquery!");

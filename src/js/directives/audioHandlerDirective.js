@@ -39,6 +39,11 @@ ngApp.directive('audioHandler', ['$rootScope', '$timeout', 'timeTrackerFactory',
             }
         };
 
+        scope.stopPlayback = () => {
+            scope.playbackState = 'play';
+            scope.audioElement.pause();
+        };
+
         scope.$watch('pseudoSeeker', (newValue, oldValue) => {
 
         });
@@ -56,6 +61,28 @@ ngApp.directive('audioHandler', ['$rootScope', '$timeout', 'timeTrackerFactory',
 
             scope.audioUrl = value;
             scope.playbackState = 'play';
+        });
+
+        // Hotkey handler
+        $rootScope.$on('hotkeyEvent', (event, value) => {
+            if(!scope.disableControls) {
+                return;
+            }
+
+            switch(value) {
+                case 'mediaplaypause':
+                    scope.togglePlayback();
+                break;
+                case 'medianexttrack':
+                    scope.skipAhead(10);
+                break;
+                case 'mediaprevioustrack':
+                    scope.skipPrevious(10);
+                break;
+                case 'mediastop':
+                    scope.stopPlayback();
+                break;
+            }
         });
 
         // DOM Events
@@ -82,6 +109,8 @@ ngApp.directive('audioHandler', ['$rootScope', '$timeout', 'timeTrackerFactory',
                 scope.disableControls = false;
             });
         });
+
+
     };
 
     return {
