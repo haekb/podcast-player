@@ -26,11 +26,11 @@
     "angular-route": "~1.4.8",
     "bootstrap": "~3.3.6",
     "jquery": "~2.1.4",
-    "angular-material": "~0.11.4",
     "angular-sanitize": "~1.4.8",
     "rss-parser": "*",
     "angular-xml": "~2.2.1",
-    "angular-animate": "^1.6.1"
+    "angular-animate": "^1.6.1",
+    "angular-material": "^1.1.1"
   },
   "devDependencies": {}
 }
