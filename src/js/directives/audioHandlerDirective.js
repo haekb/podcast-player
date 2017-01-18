@@ -1,10 +1,14 @@
-ngApp.directive('audioHandler', ['$rootScope', '$timeout', 'timeTrackerFactory', function ($rootScope, $timeout, timeTracker) {
+ngApp.directive('audioHandler', ['$rootScope', '$timeout', '$interval', 'timeTrackerFactory', function ($rootScope, $timeout, $interval, timeTracker) {
     var link = (scope, element, attrs) => {
+        const TIME_TRACKER_FREQUENCY = 5000;
+
         // Debug stuff
-        var consolePrefix = "[Audio Handler]";
+        let consolePrefix = "[Audio Handler]";
         scope.audioElement = element.find('audio')[0];
-        var storageKey = "TIME-DEFAULT";
-        var previousAudioUrl = "";
+
+        let storageKey = "TIME-DEFAULT";
+        let previousAudioUrl = "";
+        let timeTrackerInterval = null;
 
         console.info(consolePrefix, " started");
 
@@ -18,6 +22,12 @@ ngApp.directive('audioHandler', ['$rootScope', '$timeout', 'timeTrackerFactory',
         // Playback state if you were to click the button
         scope.playbackState = 'play';
         scope.disableControls = true;
+
+        let trackTime = () => {
+            scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
+            scope.audioMaxTime = Math.floor(scope.audioElement.duration);
+            timeTracker.track(storageKey, scope.currentTimeModel);
+        };
 
 
         // Internal Functionality
@@ -86,12 +96,48 @@ ngApp.directive('audioHandler', ['$rootScope', '$timeout', 'timeTrackerFactory',
         });
 
         // DOM Events
+        /*
         $(scope.audioElement).on('play pause timeupdate seeking ', () => {
+
             $timeout(() => {
                 scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
                 scope.audioMaxTime = Math.floor(scope.audioElement.duration);
                 timeTracker.track(storageKey, scope.currentTimeModel);
             });
+
+        });
+        */
+
+        //
+
+        $(scope.audioElement).on('play', () => {
+
+            // Track initial play
+            trackTime();
+
+            // Track every 5 seconds
+            timeTrackerInterval = $interval(() => {
+                trackTime();
+            },TIME_TRACKER_FREQUENCY);
+
+        });
+
+        $(scope.audioElement).on('pause', () => {
+            // Pause...
+            trackTime();
+
+            $interval.cancel(timeTrackerInterval);
+
+        });
+
+        $(scope.audioElement).on('seeking', () => {
+            // SEeking...
+            trackTime();
+        });
+
+        $(scope.audioElement).on('timeupdate', () => {
+            scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
+            scope.audioMaxTime = Math.floor(scope.audioElement.duration);
         });
 
         $(scope.audioElement).on('canplay', () => {
