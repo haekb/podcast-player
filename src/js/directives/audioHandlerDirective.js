@@ -1,170 +1,183 @@
 ngApp.directive('audioHandler', ['$rootScope', '$timeout', '$interval', 'timeTrackerFactory', function ($rootScope, $timeout, $interval, timeTracker) {
-    var link = (scope, element, attrs) => {
-        const TIME_TRACKER_FREQUENCY = 5000;
+  var link = (scope, element, attrs) => {
+    const TIME_TRACKER_FREQUENCY = 5000;
 
-        // Debug stuff
-        let consolePrefix = "[Audio Handler]";
-        scope.audioElement = element.find('audio')[0];
+    // Debug stuff
+    let consolePrefix = "[Audio Handler]";
+    scope.audioElement = element.find('audio')[0];
 
-        let storageKey = "TIME-DEFAULT";
-        let previousAudioUrl = "";
-        let timeTrackerInterval = null;
+    let storageKey = "TIME-DEFAULT";
+    let previousAudioUrl = "";
+    let timeTrackerInterval = null;
 
-        console.info(consolePrefix, " started");
+    console.info(consolePrefix, " started");
 
-        // Init Vars
-        scope.audioUrl = "";
-        scope.currentTimeModel = 0;
-        scope.audioMaxTime = 120;
-        scope.pseudoSeeker = 0;
+    // Init Vars
+    scope.audioUrl = "";
+    scope.currentTimeModel = 0;
+    scope.audioMaxTime = 120;
+    scope.pseudoSeeker = 0;
 
-        // TODO: Rename to make more clear...
-        // Playback state if you were to click the button
+    // TODO: Rename to make more clear...
+    // Playback state if you were to click the button
+    scope.playbackState = 'play';
+    scope.disableControls = true;
+
+    let trackTime = () => {
+      let currentTime = Math.floor(scope.audioElement.currentTime);
+      scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
+      scope.audioMaxTime = Math.floor(scope.audioElement.duration);
+      timeTracker.track(storageKey, currentTime);
+    };
+
+
+    // Internal Functionality
+    scope.skipAhead = (amount) => {
+      scope.audioElement.currentTime += amount;
+    };
+
+    scope.skipPrevious = (amount) => {
+      scope.audioElement.currentTime -= amount;
+    };
+
+    scope.togglePlayback = () => {
+      if (scope.playbackState == 'play') {
+        scope.playbackState = 'pause';
+        scope.audioElement.play();
+      } else {
         scope.playbackState = 'play';
-        scope.disableControls = true;
+        scope.audioElement.pause();
+      }
+    };
 
-        let trackTime = () => {
-            scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
-            scope.audioMaxTime = Math.floor(scope.audioElement.duration);
-            timeTracker.track(storageKey, scope.currentTimeModel);
-        };
+    scope.stopPlayback = () => {
+      scope.playbackState = 'play';
+      scope.audioElement.pause();
+    };
 
+    scope.$watch('pseudoSeeker', (newValue, oldValue) => {
 
-        // Internal Functionality
-        scope.skipAhead = (amount) => {
-            scope.audioElement.currentTime += amount;
-        };
-
-        scope.skipPrevious = (amount) => {
-            scope.audioElement.currentTime -= amount;
-        };
-
-        scope.togglePlayback = () => {
-            if (scope.playbackState == 'play') {
-                scope.playbackState = 'pause';
-                scope.audioElement.play();
-            } else {
-                scope.playbackState = 'play';
-                scope.audioElement.pause();
-            }
-        };
-
-        scope.stopPlayback = () => {
-            scope.playbackState = 'play';
-            scope.audioElement.pause();
-        };
-
-        scope.$watch('pseudoSeeker', (newValue, oldValue) => {
-
-        });
+    });
 //
-        // Event Handlers
-        $rootScope.$on('ah.changeUrl', (event, value) => {
-            console.info(consolePrefix, " Event Triggered [ChangeUrl:(", event, ",", value, ")");
-            scope.disableControls = true;
+    // Event Handlers
+    $rootScope.$on('ah.changeUrl', (event, value) => {
+      console.info(consolePrefix, " Event Triggered [ChangeUrl:(", event, ",", value, ")");
+      scope.disableControls = true;
 
-            // TODO: Find a more organized way to store the time data
-            storageKey = 'TIME-' + value.split('/')[value.split('/').length - 1];
-
-
-            console.log("Key ", storageKey);
-
-            scope.audioUrl = value;
-            scope.playbackState = 'play';
-        });
-
-        // Hotkey handler
-        $rootScope.$on('hotkeyEvent', (event, value) => {
-            if(!scope.disableControls) {
-                return;
-            }
-
-            switch(value) {
-                case 'mediaplaypause':
-                    scope.togglePlayback();
-                break;
-                case 'medianexttrack':
-                    scope.skipAhead(10);
-                break;
-                case 'mediaprevioustrack':
-                    scope.skipPrevious(10);
-                break;
-                case 'mediastop':
-                    scope.stopPlayback();
-                break;
-            }
-        });
-
-        // DOM Events
-        /*
-        $(scope.audioElement).on('play pause timeupdate seeking ', () => {
-
-            $timeout(() => {
-                scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
-                scope.audioMaxTime = Math.floor(scope.audioElement.duration);
-                timeTracker.track(storageKey, scope.currentTimeModel);
-            });
-
-        });
-        */
-
-        //
-
-        $(scope.audioElement).on('play', () => {
-
-            // Track initial play
-            trackTime();
-
-            // Track every 5 seconds
-            timeTrackerInterval = $interval(() => {
-                trackTime();
-            },TIME_TRACKER_FREQUENCY);
-
-        });
-
-        $(scope.audioElement).on('pause', () => {
-            // Pause...
-            trackTime();
-
-            $interval.cancel(timeTrackerInterval);
-
-        });
-
-        $(scope.audioElement).on('seeking', () => {
-            // SEeking...
-            trackTime();
-        });
-
-        $(scope.audioElement).on('timeupdate', () => {
-            scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
-            scope.audioMaxTime = Math.floor(scope.audioElement.duration);
-        });
-
-        $(scope.audioElement).on('canplay', () => {
-            $timeout(() => {
-                if(previousAudioUrl === scope.audioUrl) {
-                    return;
-                }
-
-                console.log("Audio is good to go!");
-                previousAudioUrl = scope.audioUrl;
-
-                scope.audioElement.currentTime = timeTracker.restore(storageKey) || 0;
-                console.info("PODCAST STORAGE -> ", timeTracker.restore(storageKey));
-
-                scope.disableControls = false;
-            });
-        });
+      // TODO: Find a more organized way to store the time data
+      storageKey = 'TIME-' + value.split('/')[value.split('/').length - 1];
 
 
-    };
+      console.log("Key ", storageKey);
 
-    return {
-        scope: {
-            currentTimeModel: '='
-        },
-        restrict: 'E',
-        templateUrl: './directives/audioHandler.html',
-        link: link
-    };
+      scope.audioUrl = value;
+      scope.playbackState = 'play';
+    });
+
+    // Hotkey handler
+    $rootScope.$on('hotkeyEvent', (event, value) => {
+      if (!scope.disableControls) {
+        return;
+      }
+
+      switch (value) {
+        case 'mediaplaypause':
+          scope.togglePlayback();
+          break;
+        case 'medianexttrack':
+          scope.skipAhead(10);
+          break;
+        case 'mediaprevioustrack':
+          scope.skipPrevious(10);
+          break;
+        case 'mediastop':
+          scope.stopPlayback();
+          break;
+      }
+    });
+
+    // DOM Events
+    /*
+     $(scope.audioElement).on('play pause timeupdate seeking ', () => {
+
+     $timeout(() => {
+     scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
+     scope.audioMaxTime = Math.floor(scope.audioElement.duration);
+     timeTracker.track(storageKey, scope.currentTimeModel);
+     });
+
+     });
+     */
+
+    //
+
+    $(scope.audioElement).on('play', () => {
+      scope.$apply(() => {
+        // Track initial play
+        trackTime();
+
+        // Track every 5 seconds
+        timeTrackerInterval = $interval(() => {
+          trackTime();
+        }, TIME_TRACKER_FREQUENCY);
+      });
+    });
+
+    $(scope.audioElement).on('pause', () => {
+      scope.$apply(() => {
+
+        // Pause...
+        trackTime();
+
+        $interval.cancel(timeTrackerInterval);
+      });
+    });
+
+    $(scope.audioElement).on('seeking', () => {
+      scope.$apply(() => {
+
+        // SEeking...
+        trackTime();
+      });
+    });
+
+    $(scope.audioElement).on('timeupdate', () => {
+      scope.$apply(() => {
+
+
+        scope.currentTimeModel = Math.floor(scope.audioElement.currentTime);
+        scope.audioMaxTime = Math.floor(scope.audioElement.duration);
+      });
+    });
+
+
+
+
+    $(scope.audioElement).on('canplay', () => {
+      scope.$apply(() => {
+        if (previousAudioUrl === scope.audioUrl) {
+          return;
+        }
+
+        console.log("Audio is good to go!");
+        previousAudioUrl = scope.audioUrl;
+
+        scope.audioElement.currentTime = timeTracker.restore(storageKey) || 0;
+        console.info("PODCAST STORAGE -> ", timeTracker.restore(storageKey));
+
+        scope.disableControls = false;
+      });
+    });
+
+
+  };
+
+  return {
+    scope: {
+      currentTimeModel: '='
+    },
+    restrict: 'E',
+    templateUrl: './directives/audioHandler.html',
+    link: link
+  };
 }]);
